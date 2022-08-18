@@ -20,8 +20,8 @@ def drop_search():
             search_email = data[entered_website]["email"]
             search_pass = data[entered_website]["password"]
             messagebox.showinfo(title=entered_website, message=f"Email:  {search_email}\nPassword:  {search_pass}")
-        else:
-            messagebox.showinfo(title="No Account found", message=f"There is no {entered_website} password")
+            pyperclip.copy(search_pass)
+
 
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
@@ -52,7 +52,14 @@ def save_pw():
         "password": entered_pw
         }
     }
-
+    #_______________________Checks to make sure user wants to save info__________________
+    save_yn = messagebox.askyesno(title="Save this info?", message=f"Entered_website: {entered_website}\n"
+                                                         f"Email: {entered_email}\n"
+                                                         f"Password: {entered_pw}\n"
+                                                         f"______________________________________")
+    if not save_yn:
+        return
+    #_________________Checks to make sure fields arent empty____________________
     if len(entered_website) == 0 or len(entered_pw) == 0:
         messagebox.showwarning(title="oops", message="Please fill in all required fields")
     else:
@@ -70,6 +77,7 @@ def save_pw():
             password_entry.delete(0, END)
             website_entry.delete(0, END)
             website_entry.focus()
+            messagebox.showinfo(message="Data has been saved")
 
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -88,9 +96,9 @@ canvas.place(x=120, y=0)
 dropdown_label = Label(text="Saved Passwords", font=("Aerial", 10, "bold"), bg="red")
 dropdown_label.place(x=0, y=285)
 websites_saved = []
-with open("pwdata.json", mode="r") as data_file:
-    data = json.load(data_file)
-    for key, value in data.items():
+with open("pwdata.json", mode="r") as data_drop:
+    data_dropdown = json.load(data_drop)
+    for key, value in data_dropdown.items():
         websites_saved.append(key)
 dropdown_var = StringVar(window)
 dropdown_var.set(websites_saved[0])  # default value
